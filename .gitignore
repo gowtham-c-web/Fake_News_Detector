@@ -1,0 +1,8 @@
+# Data files - keep these off GitHub
+Fake.csv
+True.csv
+
+# Standard Python files to ignore
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
