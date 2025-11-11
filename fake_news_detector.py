@@ -5,8 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import PassiveAggressiveClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 
-# --- 1. Load Data from CSV Files ---
-# !! IMPORTANT: Update these paths to where your CSV files are saved !!
+
 fake_csv_path = r"C:\Users\Dell\Desktop\DEV\Fake.csv"
 true_csv_path = r"C:\Users\Dell\Desktop\DEV\True.csv"
 
@@ -17,13 +16,10 @@ except FileNotFoundError as e:
     print(f"Error: CSV file not found. {e}")
     print("Please check the file paths and try again.")
     exit()
-# ------------------------------------
 
-# Add labels
 fake_df["label"] = "FAKE"
 true_df["label"] = "REAL"
 
-# Combine and shuffle
 df = pd.concat([fake_df, true_df], ignore_index=True)
 df = df.sample(frac=1, random_state=42).reset_index(drop=True)
 
@@ -32,7 +28,6 @@ print(f"Total REAL articles: {len(true_df)}")
 print(f"Total FAKE articles: {len(fake_df)}")
 
 
-# --- 2. Prepare and Clean Data ---
 if "text" in df.columns:
     feature_column = "text"
 elif "title" in df.columns:
@@ -65,22 +60,18 @@ print(df.head())
 # Split into training/testing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# --- 3. Feature Extraction ---
 tfidf = TfidfVectorizer(stop_words='english', max_df=0.7)
 tfidf_train = tfidf.fit_transform(X_train)
 tfidf_test = tfidf.transform(X_test)
 
-# --- 4. Train Model ---
 model = PassiveAggressiveClassifier(max_iter=1000, random_state=42)
 model.fit(tfidf_train, y_train)
 print("\n✅ Model trained successfully!")
 
-# --- 5. Evaluate Model ---
 y_pred = model.predict(tfidf_test)
 score = accuracy_score(y_test, y_pred)
 print(f"\n🎯 Model Accuracy: {score*100:.2f}%")
 
-# --- 6. Show Example Predictions from Test Set ---
 print("\n--- Example Predictions from Test Set ---")
 results_df = pd.DataFrame({
     'Actual Label': y_test, 
@@ -88,9 +79,7 @@ results_df = pd.DataFrame({
     'Article Text': X_test
 })
 print(results_df.head(10))
-# ---------------------------------------------
 
-# --- 7. User Input Prediction Loop ---
 while True:
     user_input = input("\n📰 Enter a news headline/article (or type 'exit' to quit):\n> ")
     if user_input.lower() == "exit":
